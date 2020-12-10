@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue-hello-world
+  namespace: blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: blue-hello-world
+  template:
+    metadata:
+      labels:
+        app: blue-hello-world
+    spec:
+      containers:
+      - name: hello-kubernetes
+        image: paulbouwer/hello-kubernetes:1.8
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MESSAGE
+          value: This webpage is coming from pods running in Blue Namespace!
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blue-hello-world-svc
+  namespace: blue
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: blue-hello-world
